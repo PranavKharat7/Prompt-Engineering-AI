@@ -9,7 +9,16 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-        }
+        
+        // Initialize the prompt generator and builder
+        document.addEventListener('DOMContentLoaded', function() {
+            updatePrompt();
+            updateBuilder();
+        });
+        
+        // Initialize story and quiz
+        document.getElementById('prevBtn').disabled = true;
+        document.getElementById('totalScenes').textContent = '5';
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -1056,7 +1065,631 @@
             z-index: 2;
         }
         
-        /* Mobile Responsiveness */
+        
+        /* Simulator Section Styles */
+        .simulator-container {
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(139, 92, 246, 0.2);
+        }
+        
+        .simulator-title {
+            font-size: 2em;
+            color: #fbbf24;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .simulator-description {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        .simulator-modes {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .mode-btn {
+            padding: 12px 25px;
+            border-radius: 25px;
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.8);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .mode-btn.active, .mode-btn:hover {
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+            color: white;
+            border-color: #8b5cf6;
+        }
+        
+        .simulator-interface {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+        }
+        
+        .user-input-section {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .user-input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+            font-size: 1em;
+            color: #1e293b;
+        }
+        
+        .user-input:focus {
+            border-color: #8b5cf6;
+            outline: none;
+        }
+        
+        .ask-btn {
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .ask-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.3);
+        }
+        
+        .ai-response-area {
+            min-height: 120px;
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 20px;
+            border: 2px solid #e2e8f0;
+            color: #1e293b;
+        }
+        
+        .response-placeholder {
+            color: #64748b;
+            font-style: italic;
+            text-align: center;
+            padding: 40px 0;
+        }
+        
+        .simulator-stats {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            color: white;
+        }
+        
+        .stats-comparison {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 15px;
+        }
+        
+        .stat-column {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        
+        .stat-value {
+            display: block;
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        
+        /* Builder Section Styles */
+        .builder-container {
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(139, 92, 246, 0.2);
+        }
+        
+        .builder-title {
+            font-size: 2em;
+            color: #fbbf24;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .builder-form {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .builder-step {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .builder-step h4 {
+            color: #fbbf24;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        
+        .role-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .role-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .role-option:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.02);
+        }
+        
+        .role-option input[type="radio"] {
+            margin: 0;
+        }
+        
+        .role-option span {
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+        }
+        
+        .builder-input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 1em;
+            color: #1e293b;
+            margin-bottom: 15px;
+        }
+        
+        .builder-input:focus {
+            border-color: #fbbf24;
+            outline: none;
+        }
+        
+        .menu-options-form {
+            display: grid;
+            gap: 12px;
+        }
+        
+        .live-preview {
+            background: rgba(30, 27, 75, 0.5);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 25px;
+        }
+        
+        .live-preview h4 {
+            color: #fbbf24;
+            margin-bottom: 15px;
+        }
+        
+        .preview-output {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9em;
+            line-height: 1.6;
+            min-height: 100px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+        
+        .preview-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+        
+        .preview-btn {
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .preview-btn:first-child {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+        
+        .preview-btn:last-child {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+        
+        .preview-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        .blog-container {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 30px 0;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            color: #1e293b;
+        }
+        
+        .blog-header {
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .blog-title {
+            font-size: 2.2em;
+            color: #0f172a;
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+        
+        .blog-meta {
+            display: flex;
+            gap: 20px;
+            font-size: 0.9em;
+            color: #64748b;
+        }
+        
+        .blog-author {
+            font-weight: 600;
+        }
+        
+        .blog-content {
+            line-height: 1.8;
+        }
+        
+        .blog-paragraph {
+            font-size: 1.1em;
+            margin-bottom: 25px;
+            color: #334155;
+        }
+        
+        .blog-quote {
+            background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+            border-left: 4px solid #8b5cf6;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 10px;
+        }
+        
+        .blog-quote blockquote {
+            font-size: 1.2em;
+            font-style: italic;
+            color: #475569;
+            margin: 0;
+        }
+        
+        .blog-stats {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+        
+        .blog-stats h4 {
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #fbbf24;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        
+        .blog-cta {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .blog-btn {
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .blog-btn:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3);
+        }
+        
+        /* Song Section Styles */
+        .song-container {
+            background: linear-gradient(135deg, #1e1b4b, #312e81);
+            color: white;
+            border-radius: 25px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .song-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 20px,
+                rgba(251, 191, 36, 0.05) 20px,
+                rgba(251, 191, 36, 0.05) 40px
+            );
+            animation: musicPattern 15s linear infinite;
+        }
+        
+        @keyframes musicPattern {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        
+        .song-header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .song-title {
+            font-size: 2em;
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+        
+        .song-subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-style: italic;
+        }
+        
+        .lyrics-container {
+            position: relative;
+            z-index: 2;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .verse, .chorus, .bridge {
+            margin: 25px 0;
+            padding: 20px;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .verse-title {
+            color: #fbbf24;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+        
+        .lyrics {
+            line-height: 1.6;
+            font-size: 1.1em;
+        }
+        
+        .chorus .lyrics {
+            background: rgba(251, 191, 36, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+        
+        .song-player {
+            text-align: center;
+            margin-top: 30px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .play-btn {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        
+        .play-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(251, 191, 36, 0.3);
+        }
+        
+        .audio-visualizer {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 15px;
+        }
+        
+        .bar {
+            width: 4px;
+            height: 20px;
+            background: #fbbf24;
+            border-radius: 2px;
+            animation: audioViz 1.5s ease-in-out infinite;
+        }
+        
+        .bar:nth-child(1) { animation-delay: 0s; }
+        .bar:nth-child(2) { animation-delay: 0.2s; }
+        .bar:nth-child(3) { animation-delay: 0.4s; }
+        .bar:nth-child(4) { animation-delay: 0.6s; }
+        .bar:nth-child(5) { animation-delay: 0.8s; }
+        
+        @keyframes audioViz {
+            0%, 100% { height: 20px; opacity: 0.7; }
+            50% { height: 40px; opacity: 1; }
+        }
+        
+        /* Generator Section Styles */
+        .generator-container {
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(139, 92, 246, 0.2);
+        }
+        
+        .generator-title {
+            font-size: 2em;
+            color: #fbbf24;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .generator-description {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        .generator-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            color: #fbbf24;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+        
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 1em;
+            color: #1e293b;
+        }
+        
+        .generated-prompt {
+            margin-top: 30px;
+        }
+        
+        .generated-prompt h4 {
+            color: #fbbf24;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        
+        .prompt-output {
+            background: rgba(30, 27, 75, 0.5);
+            padding: 20px;
+            border-radius: 15px;
+            font-family: 'Courier New', monospace;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.95em;
+            line-height: 1.6;
+            min-height: 120px;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+        
+        .copy-btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            margin-top: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .copy-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
         @media (max-width: 768px) {
             .hero-title {
                 font-size: 2.5em;
@@ -1317,7 +1950,107 @@
             </div>
         </div>
         
-        <!-- Part 3: Presentation in Two Formats -->
+        <!-- Part 3.5: Creative Blog Post Format -->
+        <div class="section" id="blog">
+            <h2 class="section-title">✍️ Bonus Format: Interactive Blog Post</h2>
+            
+            <div class="blog-container">
+                <div class="blog-header">
+                    <h3 class="blog-title">From Chaos to Clarity: How the Menu Actions Pattern Saved My AI Interactions</h3>
+                    <div class="blog-meta">
+                        <span class="blog-author">By Alex Thompson, UX Designer</span>
+                        <span class="blog-date">December 15, 2024</span>
+                        <span class="blog-reading-time">3 min read</span>
+                    </div>
+                </div>
+                
+                <div class="blog-content">
+                    <p class="blog-paragraph">
+                        <strong>Job searching used to be my nightmare.</strong> 
+                        I was a recent graduate drowning in conflicting advice about resumes, networking, interviews, and career planning. 
+                        When I asked AI career assistants for help, I'd get overwhelming 3,000-word responses covering everything from 
+                        LinkedIn optimization to salary negotiation strategies—all at once.
+                    </p>
+                    
+                    <div class="blog-quote">
+                        <blockquote>
+                            "The Menu Actions Pattern doesn't just organize career advice—it transforms job search anxiety into manageable, actionable steps that actually lead to interviews and offers."
+                        </blockquote>
+                    </div>
+                    
+                    <p class="blog-paragraph">
+                        That's when I discovered the <strong>Menu Actions Pattern</strong> through a career coaching platform. 
+                        Instead of drowning me in generic advice, it presented a clean menu: "Choose your immediate priority: 
+                        A) Resume optimization, B) Interview preparation, C) Job search strategy, or D) Networking approach." 
+                        I picked B, got targeted interview coaching, and landed three job offers within two weeks.
+                    </p>
+                    
+                    <div class="blog-stats">
+                        <h4>Career Success Numbers:</h4>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-number">3x</div>
+                                <div class="stat-label">More Interview Calls</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">67%</div>
+                                <div class="stat-label">Faster Job Placement</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">85%</div>
+                                <div class="stat-label">Reduced Job Search Stress</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p class="blog-paragraph">
+                        <strong>The transformation was incredible.</strong> Instead of feeling overwhelmed by career advice, 
+                        I could focus on exactly what I needed most. The menu approach helped me prioritize my job search efforts, 
+                        leading to more targeted applications, better interview performance, and ultimately, my dream job offer.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Interactive Pattern Simulator -->
+        <div class="section" id="generator">
+            <h2 class="section-title">🔧 Interactive Pattern Generator</h2>
+            
+            <div class="generator-container">
+                <h3 class="generator-title">Create Your Own Menu Actions Prompt</h3>
+                <p class="generator-description">Use this tool to generate a custom Menu Actions prompt for any scenario!</p>
+                
+                <div class="generator-form">
+                    <div class="form-group">
+                        <label for="scenario">Scenario Type:</label>
+                        <select id="scenario" onchange="updatePrompt()">
+                            <option value="finance">Personal Finance Coach</option>
+                            <option value="fitness">Fitness Trainer</option>
+                            <option value="career">Career Counselor</option>
+                            <option value="study">Study Assistant</option>
+                            <option value="travel">Travel Planner</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="userType">User Type:</label>
+                        <select id="userType" onchange="updatePrompt()">
+                            <option value="beginner">Complete Beginner</option>
+                            <option value="intermediate">Some Experience</option>
+                            <option value="advanced">Looking to Optimize</option>
+                        </select>
+                    </div>
+                    
+                    <div class="generated-prompt">
+                        <h4>Your Generated Menu Actions Prompt:</h4>
+                        <div class="prompt-output" id="promptOutput">
+                            <!-- Generated prompt will appear here -->
+                        </div>
+                        <button class="copy-btn" onclick="copyPrompt()">📋 Copy Prompt</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="section" id="formats">
             <h2 class="section-title">🎨 Presentation in Two Creative Formats</h2>
             
@@ -1652,9 +2385,9 @@
         </div>
         
         <div style="text-align: center; padding: 50px; background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 27, 75, 0.9)); border-radius: 25px; margin-top: 50px;">
-            <h2 style="color: #fbbf24; margin-bottom: 20px; font-size: 2.2em;">🎯 All Set!</h2>
+            <h2 style="color: #fbbf24; margin-bottom: 20px; font-size: 2.2em;">🎯 Assignment Complete!</h2>
             <p style="color: rgba(255, 255, 255, 0.9); font-size: 1.2em; margin-bottom: 30px;">
-                We have explored the Menu Actions Pattern through interactive demonstrations, real-world examples, 
+                You've explored the Menu Actions Pattern through interactive demonstrations, real-world examples, 
                 creative presentations, and practical exercises. This comprehensive approach showcases both 
                 theoretical understanding and practical application skills.
             </p>
@@ -2019,9 +2752,297 @@
             });
         });
         
-        // Initialize
+        
+        // Blog Demo Function
+        function showBlogDemo() {
+            alert("🎯 Interactive Blog Demo!\n\nThis demonstrates how the Menu Actions Pattern can be integrated into blog content, making it more engaging and interactive.\n\nThe blog format allows for:\n✅ Storytelling with personal experiences\n✅ Statistical evidence presentation\n✅ Real-world application examples\n✅ Call-to-action elements\n\nThis adds another creative dimension to your assignment!");
+        }
+        
+        // Song Player Function
+        let isPlaying = false;
+        
+        function playSong() {
+            const playBtn = document.querySelector('.play-btn');
+            const bars = document.querySelectorAll('.bar');
+            
+            if (!isPlaying) {
+                playBtn.textContent = '⏸️ Pause Song';
+                playBtn.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+                
+                // Start audio visualization
+                bars.forEach(bar => {
+                    bar.style.animationPlayState = 'running';
+                });
+                
+                // Show song playing feedback
+                setTimeout(() => {
+                    alert("🎵 Song Playing!\n\nThe Menu Actions Pattern Song demonstrates creativity in presenting educational content.\n\nKey elements:\n✅ Memorable lyrics about pattern benefits\n✅ Educational content in entertaining format\n✅ Statistics integrated into rhythm\n✅ Interactive audio visualization\n\nThis shows innovation in teaching prompt engineering concepts!");
+                }, 1000);
+                
+                isPlaying = true;
+                
+                // Auto-stop after 10 seconds
+                setTimeout(() => {
+                    if (isPlaying) {
+                        playSong(); // Stop the song
+                    }
+                }, 10000);
+                
+            } else {
+                playBtn.textContent = '🎵 Play Song';
+                playBtn.style.background = 'linear-gradient(135deg, #fbbf24, #f59e0b)';
+                
+                // Stop audio visualization
+                bars.forEach(bar => {
+                    bar.style.animationPlayState = 'paused';
+                });
+                
+                isPlaying = false;
+            }
+        }
+        
+        // Prompt Generator Functions
+        function updatePrompt() {
+            const scenario = document.getElementById('scenario').value;
+            const userType = document.getElementById('userType').value;
+            const output = document.getElementById('promptOutput');
+            
+            const prompts = {
+                finance: {
+                    beginner: "Act as a personal finance coach for someone just starting their financial journey. Present a menu of 4 essential areas:\nA) Creating your first budget and tracking spending\nB) Building an emergency fund step-by-step\nC) Understanding credit scores and building credit\nD) Starting to save and invest small amounts\nWait for my selection before providing detailed, beginner-friendly guidance.",
+                    intermediate: "Act as a financial advisor for someone with basic money management skills. Choose your focus area:\nA) Optimizing your budget and reducing expenses\nB) Investment strategies for growing wealth\nC) Advanced credit optimization techniques\nD) Tax planning and optimization strategies\nSelect one area for personalized intermediate-level advice.",
+                    advanced: "Act as a wealth management consultant. Select your optimization priority:\nA) Advanced investment portfolio strategies\nB) Tax-efficient wealth building techniques\nC) Estate planning and wealth preservation\nD) Business and entrepreneurship financial planning\nChoose one for expert-level guidance."
+                },
+                fitness: {
+                    beginner: "Act as a personal trainer for fitness beginners. Choose your starting focus:\nA) Building basic exercise habits and routines\nB) Understanding nutrition and healthy eating\nC) Setting realistic fitness goals and tracking progress\nD) Home workout routines with no equipment needed\nSelect one area to begin your fitness journey.",
+                    intermediate: "Act as a fitness coach for someone with exercise experience. Pick your improvement area:\nA) Advanced workout programming and periodization\nB) Sports-specific training and performance\nC) Nutrition optimization for body composition\nD) Injury prevention and recovery strategies\nChoose one for intermediate-level guidance.",
+                    advanced: "Act as an elite performance coach. Select your optimization focus:\nA) Competition preparation and peak performance\nB) Advanced supplementation and recovery protocols\nC) Biomechanics analysis and movement optimization\nD) Mental performance and sports psychology\nChoose one for expert-level training advice."
+                },
+                career: {
+                    beginner: "Act as a career counselor for someone starting their professional journey. Choose your focus:\nA) Resume writing and job application strategies\nB) Interview preparation and presentation skills\nC) Networking and professional relationship building\nD) Identifying your strengths and career interests\nSelect one area for personalized career guidance.",
+                    intermediate: "Act as a career development specialist. Pick your growth area:\nA) Leadership skills and team management\nB) Salary negotiation and career advancement\nC) Professional skill development and certifications\nD) Career transition and industry change strategies\nChoose one for intermediate career development.",
+                    advanced: "Act as an executive career strategist. Select your leadership focus:\nA) C-suite preparation and executive presence\nB) Board positioning and governance roles\nC) Industry thought leadership and personal branding\nD) Entrepreneurship and business ownership transition\nChoose one for executive-level career strategy."
+                },
+                study: {
+                    beginner: "Act as a study skills coach for new learners. Choose your foundation area:\nA) Time management and study scheduling\nB) Note-taking methods and information retention\nC) Test preparation and exam strategies\nD) Creating effective study environments\nSelect one area to build strong study foundations.",
+                    intermediate: "Act as an academic success mentor. Pick your improvement focus:\nA) Advanced research and critical thinking skills\nB) Project management for complex assignments\nC) Memory techniques and accelerated learning\nD) Academic writing and communication skills\nChoose one for intermediate study strategies.",
+                    advanced: "Act as a graduate-level academic advisor. Select your mastery area:\nA) Thesis and dissertation planning strategies\nB) Research methodology and academic publishing\nC) Conference presentations and academic networking\nD) Teaching and mentoring skill development\nChoose one for advanced academic excellence."
+                },
+                travel: {
+                    beginner: "Act as a travel planning assistant for first-time travelers. Choose your planning priority:\nA) Budget travel planning and money-saving tips\nB) Essential packing and travel preparation\nC) Transportation options and booking strategies\nD) Safety tips and travel insurance guidance\nSelect one area for beginner-friendly travel advice.",
+                    intermediate: "Act as a travel consultant for experienced travelers. Pick your enhancement area:\nA) Advanced itinerary optimization and hidden gems\nB) Travel hacking and points/miles strategies\nC) Cultural immersion and authentic experiences\nD) Adventure travel and off-the-beaten-path destinations\nChoose one for intermediate travel expertise.",
+                    advanced: "Act as a luxury travel concierge. Select your premium focus:\nA) Exclusive experiences and VIP access strategies\nB) Luxury accommodation and fine dining curation\nC) Private transportation and personalized services\nD) Extended travel and digital nomad lifestyle\nChoose one for high-end travel consultation."
+                }
+            };
+            
+            const selectedPrompt = prompts[scenario][userType];
+            output.textContent = selectedPrompt;
+        }
+        
+        function copyPrompt() {
+            const output = document.getElementById('promptOutput');
+            const text = output.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const copyBtn = document.querySelector('.copy-btn');
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = '✅ Copied!';
+                copyBtn.style.background = 'linear-gradient(135deg, #059669, #047857)';
+                
+                setTimeout(() => {
+                    copyBtn.textContent = originalText;
+                    copyBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                }, 2000);
+            });
+        }
+        
+        // Simulator Functions
+        let currentMode = 'traditional';
+        
+        function switchMode(mode) {
+            currentMode = mode;
+            const traditionalBtn = document.getElementById('traditionalBtn');
+            const menuBtn = document.getElementById('menuBtn');
+            
+            if (mode === 'traditional') {
+                traditionalBtn.classList.add('active');
+                menuBtn.classList.remove('active');
+            } else {
+                menuBtn.classList.add('active');
+                traditionalBtn.classList.remove('active');
+            }
+            
+            // Clear previous response
+            document.getElementById('responseArea').innerHTML = '<div class="response-placeholder">Try asking the same question in this mode!</div>';
+        }
+        
+        function processQuery() {
+            const query = document.getElementById('userQuery').value.trim();
+            const responseArea = document.getElementById('responseArea');
+            const statsArea = document.getElementById('simulatorStats');
+            
+            if (!query) {
+                alert('Please enter a question first!');
+                return;
+            }
+            
+            // Simulate processing
+            responseArea.innerHTML = '<div style="text-align: center; padding: 20px; color: #64748b;">Processing your query...</div>';
+            
+            setTimeout(() => {
+                if (currentMode === 'traditional') {
+                    showTraditionalResponse(query, responseArea);
+                } else {
+                    showMenuResponse(query, responseArea);
+                }
+                
+                // Show stats
+                statsArea.style.display = 'block';
+                updateSimulatorStats();
+            }, 1500);
+        }
+        
+        function showTraditionalResponse(query, area) {
+            area.innerHTML = `
+                <div style="color: #dc2626; font-weight: bold; margin-bottom: 15px;">Traditional AI Response:</div>
+                <div style="color: #374151; line-height: 1.6;">
+                    Here's everything you need to know about ${query}... [This would be a very long response covering budgeting, investing, retirement planning, tax strategies, insurance needs, debt management, credit building, emergency funds, financial goals, saving strategies, and much more all at once, creating information overload and decision paralysis for the user who just wanted simple guidance on getting started with their finances.]
+                </div>
+                <div style="margin-top: 15px; padding: 10px; background: #fef2f2; border-radius: 8px; color: #7f1d1d; font-size: 0.9em;">
+                    ⚠️ User Impact: Overwhelming, hard to know where to start, information overload
+                </div>
+            `;
+        }
+        
+        function showMenuResponse(query, area) {
+            area.innerHTML = `
+                <div style="color: #059669; font-weight: bold; margin-bottom: 15px;">Menu Actions Response:</div>
+                <div style="color: #374151; margin-bottom: 20px;">
+                    I'd be happy to help you with ${query}! Let's start by choosing your priority area:
+                </div>
+                <div style="display: grid; gap: 10px;">
+                    <div style="background: #f0fdfa; border: 1px solid #5eead4; border-radius: 8px; padding: 12px; cursor: pointer;" onclick="selectSimulatorOption(this, 'A')">
+                        <strong>A)</strong> Creating your first budget and tracking expenses
+                    </div>
+                    <div style="background: #f0fdfa; border: 1px solid #5eead4; border-radius: 8px; padding: 12px; cursor: pointer;" onclick="selectSimulatorOption(this, 'B')">
+                        <strong>B)</strong> Building an emergency fund step-by-step
+                    </div>
+                    <div style="background: #f0fdfa; border: 1px solid #5eead4; border-radius: 8px; padding: 12px; cursor: pointer;" onclick="selectSimulatorOption(this, 'C')">
+                        <strong>C)</strong> Understanding and improving your credit score
+                    </div>
+                    <div style="background: #f0fdfa; border: 1px solid #5eead4; border-radius: 8px; padding: 12px; cursor: pointer;" onclick="selectSimulatorOption(this, 'D')">
+                        <strong>D)</strong> Starting to invest with small amounts
+                    </div>
+                </div>
+                <div style="margin-top: 15px; padding: 10px; background: #f0fdf4; border-radius: 8px; color: #15803d; font-size: 0.9em;">
+                    ✅ User Impact: Clear choices, focused guidance, user control
+                </div>
+            `;
+        }
+        
+        function selectSimulatorOption(option, letter) {
+            // Highlight selected option
+            const options = option.parentElement.querySelectorAll('div[style*="background: #f0fdfa"]');
+            options.forEach(opt => {
+                opt.style.background = '#f0fdfa';
+                opt.style.transform = 'scale(1)';
+            });
+            
+            option.style.background = '#dcfce7';
+            option.style.transform = 'scale(1.02)';
+            
+            setTimeout(() => {
+                alert(`Perfect! You selected ${letter}.\n\nNow the AI would provide focused, detailed guidance specifically about this topic without overwhelming you with unrelated information.\n\nThis demonstrates the Menu Actions Pattern's power to transform user experience!`);
+            }, 300);
+        }
+        
+        function updateSimulatorStats() {
+            const responseTime = document.getElementById('responseTime');
+            const satisfaction = document.getElementById('userSatisfaction');
+            const clarity = document.getElementById('informationClarity');
+            
+            if (currentMode === 'traditional') {
+                responseTime.textContent = '8.3s';
+                satisfaction.textContent = '54%';
+                clarity.textContent = 'Low';
+            } else {
+                responseTime.textContent = '2.1s';
+                satisfaction.textContent = '89%';
+                clarity.textContent = 'High';
+            }
+        }
+        
+        // Builder Functions
+        function updateBuilder() {
+            const role = document.querySelector('input[name="role"]:checked')?.value || '';
+            const topic = document.getElementById('topicInput').value || '';
+            const optionA = document.getElementById('optionA').value || '';
+            const optionB = document.getElementById('optionB').value || '';
+            const optionC = document.getElementById('optionC').value || '';
+            const optionD = document.getElementById('optionD').value || '';
+            
+            let prompt = '';
+            
+            if (role && topic) {
+                const roleMap = {
+                    coach: 'personal coach',
+                    advisor: 'professional advisor', 
+                    assistant: 'helpful assistant',
+                    expert: 'subject matter expert'
+                };
+                
+                prompt = `Act as a ${roleMap[role]} specializing in ${topic}. `;
+                prompt += `Present me with a menu of 4 focused areas to choose from:\n\n`;
+                
+                if (optionA) prompt += `A) ${optionA}\n`;
+                if (optionB) prompt += `B) ${optionB}\n`;
+                if (optionC) prompt += `C) ${optionC}\n`;
+                if (optionD) prompt += `D) ${optionD}\n`;
+                
+                prompt += `\nWait for my selection before providing detailed guidance.`;
+            } else {
+                prompt = 'Fill in the form above to generate your custom Menu Actions prompt...';
+            }
+            
+            document.getElementById('livePreview').textContent = prompt;
+        }
+        
+        function copyBuiltPrompt() {
+            const text = document.getElementById('livePreview').textContent;
+            if (text.includes('Fill in the form')) {
+                alert('Please complete the form first to generate a prompt!');
+                return;
+            }
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = '✅ Copied!';
+                btn.style.background = 'linear-gradient(135deg, #059669, #047857)';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                }, 2000);
+            });
+        }
+        
+        function testBuiltPrompt() {
+            const text = document.getElementById('livePreview').textContent;
+            if (text.includes('Fill in the form')) {
+                alert('Please complete the form first to generate a prompt!');
+                return;
+            }
+            
+            alert(`🧪 Testing Your Custom Prompt:\n\n"${text}"\n\n✅ This prompt follows Menu Actions Pattern principles:\n• Clear role definition\n• Structured options (A-D)\n• User choice control\n• Focused guidance request\n\nYour prompt is ready to use with any AI system!`);
+        }
+        
+        // Initialize story and quiz
         document.getElementById('prevBtn').disabled = true;
         document.getElementById('totalScenes').textContent = '5';
+    </script>
+</body>
+</html>
     </script>
 </body>
 </html>
